@@ -79,46 +79,83 @@ sudo docker stop <container-id>            # Stop the container
 
 
 
-# ====================== MAVEN WEB PROJECT DEPLOYMENT IN AWS ======================
+# ====================== MAVEN WEB JAVA PROJECT DEPLOYMENT IN AWS ======================
 
-# STEP 1: Repeat instance creation
-# Do this: Launch new EC2 → Same settings (Ubuntu, t2.micro, key pair, enable all ports)
-# Do this: After 2 checks passed → Click Connect → Copy SSH command
-
-
-# STEP 2: Connect via SSH
-cd <path-to-pem>
-ssh -i "<key>.pem" ubuntu@<public-ip>
-
-
-# STEP 3: Clone Maven Web Project
-git clone <maven-project-url>              # Do this: clone your maven project repo
-cd <project-folder>
-ls
-
-# If branch is not main:
-git branch -M main                         # Fix default branch if needed
+# STEP 1 — Launch EC2 Instance
+# Do this: Login into AWS Academy → Start Lab → Wait for status to turn GREEN
+# Click "AWS" → Search for "EC2" → Click EC2
+# Click "Launch Instance"
+# Do this: Enter name for instance (example: MavenWebDeployServer)
+# Under Application and OS Images → Choose: Ubuntu Server (Free Tier Eligible)
+# Instance Type: t2.micro
+# Click "Create new key pair" → Give a name → Click Create → Save .pem file safely
+# Scroll to Network Settings → Do this: Check/Enable all checkboxes OR allow HTTP, HTTPS
+# Storage: keep default 8GB
+# Click "Launch Instance"
+# On left menu click "Instances"
+# Do this: Wait until status → 2/2 checks passed
+# Click the instance checkbox → Click CONNECT → SSH tab → Copy SSH command
 
 
-# STEP 4: Build Docker and Start Container
-sudo docker build -t mymavenapp .          # Build Docker image
-sudo docker run -d -p 9090:9090 mymavenapp # Run app on port 9090
-
-# Do this: Copy EC2 Public IP
-# visit in browser:
-# http://<public-ip>:9090
+# STEP 2 — Connect via SSH
+cd <path-to-pem-file>                                      # Do this: navigate where .pem exists
+ssh -i "<your-key-name>.pem" ubuntu@<public-ip-address>    # Paste SSH command copied from AWS
+                                                            # Type "yes" if asked for confirmation
 
 
-# STEP 5: (If page not loading)
-# Do this: Go to EC2 → Security Groups → Edit inbound rules
-# Add rule: Custom TCP → Port 9090 → Source 0.0.0.0/0 → Save changes
-# Do this: Refresh browser page
+# STEP 3 — Update Instance and Install Required Software
+sudo apt update                                            # Update package lists
+sudo apt-get install docker.io                             # Install Docker engine
+sudo apt install git                                       # Install Git
+sudo apt install nano                                      # Install Nano editor
 
 
-# STEP 6: Stop Container and Terminate Instance
-sudo docker ps
-sudo docker stop <container-id>
+# STEP 4 — Clone Maven Web Project from GitHub
+# Do this: Go to your Maven Web project repository → Click Code → Copy HTTPS URL
+git clone <your-maven-project-https-url>                   # Clone repo into EC2
+cd <cloned-folder-name>                                    # Enter folder
+ls                                                          # Verify project files
 
-# Do this: Terminate EC2 instance → End Lab
-# ===================== END MAVEN WEB PROJECT DEPLOYMENT =====================
+# If branch isn't main:
+git branch -M main                                           # Make main the default branch (if needed)
+
+
+# STEP 5 — Create Dockerfile for Maven Web Application
+# Do this: create Dockerfile inside EC2 project folder
+nano Dockerfile
+
+# Paste the following into Dockerfile:
+FROM tomcat:9-jdk11
+COPY target/*.war /usr/local/tomcat/webapps/
+
+# Do this to save file:
+# Press CTRL + O → Enter → CTRL + X
+
+
+# STEP 6 — Build Docker Image and Run Container
+sudo docker build -t mymavenapp .                          # Build app image
+sudo docker run -d -p 9090:8080 mymavenapp                 # Run container mapping port 9090 → Tomcat 8080
+
+# Do this: Go to EC2 Instances → Copy Public IPv4 address
+# Paste URL in browser:
+# http://<public-ip>:9090/<your-project-name>
+
+
+# STEP 7 — If App Not Loading (Open Required Port)
+# Do this: EC2 → Security Groups → Click the group attached to instance
+# Click "Edit inbound rules"
+# Click "Add rule"
+# Set → Custom TCP | Port: 9090 | Source: 0.0.0.0/0
+# Click Save
+# Do this: refresh browser page to see web app running
+
+
+# STEP 8 — Stop container and terminate instance when done
+sudo docker ps                                               # List running containers
+sudo docker stop <container-id>                              # Stop running container
+
+# Do this: Go back to EC2 console → Instance State → Terminate
+# Do this: Click "End Lab"
+
+# ====================== END OF MAVEN JAVA WEB DEPLOYMENT ======================
 
