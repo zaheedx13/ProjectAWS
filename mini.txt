@@ -1,0 +1,75 @@
+WEEK-10 – WORKING WITH MINIKUBE & NAGIOS
+Steps to Complete the Task (Execution Only)
+
+------------------------------------------------------
+MINIKUBE & KUBERNETES TASK STEPS
+------------------------------------------------------
+
+Step 1: Start Minikube
+minikube start
+minikube status
+
+Step 2: Create Deployment (Run Nginx)
+kubectl create deployment mynginx --image=nginx
+kubectl get deployments
+kubectl get pods
+kubectl describe pods
+
+Step 3: Expose Deployment as a Service
+kubectl expose deployment mynginx --type=NodePort --port=80 --target-port=80
+kubectl get service mynginx
+
+Step 4: Scale Deployment (Add More Pods)
+kubectl scale deployment mynginx --replicas=4
+kubectl get pods
+
+Step 5: Access Nginx Application
+Option 1 (Port forward):
+kubectl port-forward svc/mynginx 8081:80
+Access in browser → http://localhost:8081
+
+Option 2 (Minikube Tunnel):
+minikube tunnel
+minikube service mynginx --url
+
+Step 6: Open Kubernetes Dashboard
+minikube dashboard
+
+Step 7: Stop & Clean Up
+kubectl delete deployment mynginx
+kubectl delete service mynginx
+minikube stop
+minikube delete
+
+
+------------------------------------------------------
+NAGIOS MONITORING TOOL TASK STEPS
+------------------------------------------------------
+
+Step 1: Pull Nagios Image
+docker pull jasonrivers/nagios:latest
+
+Step 2: Run Nagios Container
+docker run --name nagiosdemo -p 8888:80 jasonrivers/nagios:latest
+
+Step 3: Access Nagios Dashboard
+Open browser → http://localhost:8888
+Login:
+Username: nagiosadmin
+Password: nagios
+
+Step 4: Explore Monitoring Sections
+Navigate:
+Hosts
+Services
+Alerts
+
+Step 5: Stop & Remove Nagios
+docker stop nagiosdemo
+docker rm nagiosdemo
+docker rmi jasonrivers/nagios:latest   (optional)
+
+
+------------------------------------------------------
+WEEK-10 TASK COMPLETED
+------------------------------------------------------
