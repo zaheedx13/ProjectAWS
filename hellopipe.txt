@@ -1,0 +1,97 @@
+WEEK-9 – PIPELINE CREATION USING SCRIPT
+Steps to Complete the Task
+
+------------------------------------------------------
+STEP 1: Open Jenkins
+------------------------------------------------------
+• Open browser → http://localhost:8080
+• Login to Jenkins dashboard
+
+------------------------------------------------------
+STEP 2: Create a New Pipeline Project
+------------------------------------------------------
+• Click **New Item**
+• Enter name: Week9_Pipeline (or any project name)
+• Select **Pipeline**
+• Click **OK**
+
+------------------------------------------------------
+STEP 3: Configure Project (General + Triggers)
+------------------------------------------------------
+• In **Description**, write project details (example: Scripted pipeline execution)
+• Go to **Build Triggers**
+   - Select any trigger of your choice (example: Build periodically or Poll SCM)
+
+------------------------------------------------------
+STEP 4: Add Pipeline Script
+------------------------------------------------------
+• Scroll to **Pipeline** section
+• Under **Definition**, select **Pipeline script**
+• In the script box, paste this pipeline code:
+
+pipeline {
+    agent any
+    tools{
+        maven 'MAVEN-HOME'
+    }
+    stages {
+        stage('git repo & clean') {
+            steps {
+                bat "git clone provide your github link"
+                bat "mvn clean -f mavenjava"
+            }
+        }
+        stage('install') {
+            steps {
+                bat "mvn install -f mavenjava"
+            }
+        }
+        stage('test') {
+            steps {
+                bat "mvn test -f mavenjava"
+            }
+        }
+        stage('package') {
+            steps {
+                bat "mvn package -f mavenjava"
+            }
+        }
+    }
+}
+
+------------------------------------------------------
+STEP 5: Modify Script (IMPORTANT)
+------------------------------------------------------
+• Replace **provide your github link** with your actual repository URL
+• Replace **mavenjava** with your project folder name if different
+
+Example changes:
+bat "git clone https://github.com/username/repo.git"
+bat "mvn clean -f studentapp"
+
+------------------------------------------------------
+STEP 6: Save & Run Pipeline
+------------------------------------------------------
+• Click **Apply**
+• Click **Save**
+• Click **Build Now**
+
+------------------------------------------------------
+STEP 7: Verify Output
+------------------------------------------------------
+• Open **Console Output** for the running build
+• Confirm stages execute in this order:
+   1. git repo & clean
+   2. install
+   3. test
+   4. package
+
+------------------------------------------------------
+STEP 8: Confirm Build Status
+------------------------------------------------------
+• Build should complete successfully
+• Artifacts (WAR/JAR) should be generated in the package stage
+
+------------------------------------------------------
+WEEK-9 TASK COMPLETED
+------------------------------------------------------
