@@ -1,0 +1,124 @@
+# ====================== DEPLOY INDEX.HTML USING AWS EC2 ======================
+
+# STEP 1: Create EC2 Instance
+# Do this: Login to AWS Academy → Go to Modules → Launch AWS Academy Lab → Click Start Lab
+# Wait for AWS status to turn GREEN
+# Click "AWS" button → Search for "EC2" → Click "EC2"
+# Click "Launch Instance"
+# Do this: Give name = ubuntu
+# Select OS = Ubuntu Server (Free Tier Eligible)
+# Select Instance Type = t2.micro
+# Click "Create new key pair" → Give a name → Click "Create key pair"
+# (Do this: Save the .pem file safely on your system)
+# Scroll to Network settings → Do this: Check HTTP + HTTPS checkboxes
+# Keep Storage = 8GB
+# Click "Launch Instance"
+# Click "Instances" on left menu
+# Wait until status shows 2/2 checks passed
+# Do this: Select the instance → Click "Connect"
+# Go to SSH tab → Copy the SSH command
+
+
+# STEP 2: Connect to EC2 through SSH
+cd <path-to-your-pem-file>                 # Do this: navigate to where pem file is stored
+ssh -i "<key-name>.pem" ubuntu@<public-ip> # Do this: paste the copied SSH command here
+                                           # Accept connection by typing "yes" if prompted
+
+
+# STEP 3: Install Required Software on Ubuntu
+sudo apt update                            # Updates system package list
+sudo apt-get install docker.io             # Installs Docker
+sudo apt install git                       # Installs Git
+sudo apt install nano                      # Installs Nano editor
+
+
+# STEP 4: Create index.html and Push to GitHub
+# Do this: On local PC create folder Example and create an index.html file
+# Do this: Right-click inside folder → Open Git Bash
+git init                                   # Initialize git repo
+git add .                                  # Stage all files
+git commit -m "first commit"               # Commit files
+git branch -M main                         # Rename branch to main
+git remote add origin <repo-url>           # Link local repo to GitHub
+git push -u origin main                    # Push index.html to GitHub
+
+# Do this: Copy repo HTTPS URL from GitHub
+git clone <repo-url>                       # Clone repo inside EC2
+cd <repo-folder>
+ls                                         # Verify index.html is cloned properly
+
+
+# STEP 5: Create Dockerfile to host HTML on Nginx
+nano Dockerfile                            # Do this: create Dockerfile inside EC2
+
+# Paste this inside nano (do this manually):
+FROM nginx
+COPY . /usr/share/nginx/html
+
+# Do this:
+# Press CTRL+O → ENTER → CTRL+X to save and exit
+
+
+# STEP 6: Build and Run Docker Container
+sudo docker build -t mywebapp .            # Build image from Dockerfile
+sudo docker run -d -p 80:80 mywebapp       # Run container and map port 80 → browser port
+
+# Do this: Go to EC2 dashboard → Click Instances → Copy Public IPv4
+# Open browser and paste:
+# http://<public-ip>
+# (Do this: Try HTTP instead of HTTPS if needed)
+
+
+# STEP 7: Stop Container & Terminate Instance
+sudo docker ps                             # Shows running containers
+sudo docker stop <container-id>            # Stop the container
+
+# Do this: Go to EC2 → Select instance → Instance state → Terminate
+# Do this: Click End Lab
+# ========================== END OF DEPLOYING index.html ==========================
+
+
+
+# ====================== MAVEN WEB PROJECT DEPLOYMENT IN AWS ======================
+
+# STEP 1: Repeat instance creation
+# Do this: Launch new EC2 → Same settings (Ubuntu, t2.micro, key pair, enable all ports)
+# Do this: After 2 checks passed → Click Connect → Copy SSH command
+
+
+# STEP 2: Connect via SSH
+cd <path-to-pem>
+ssh -i "<key>.pem" ubuntu@<public-ip>
+
+
+# STEP 3: Clone Maven Web Project
+git clone <maven-project-url>              # Do this: clone your maven project repo
+cd <project-folder>
+ls
+
+# If branch is not main:
+git branch -M main                         # Fix default branch if needed
+
+
+# STEP 4: Build Docker and Start Container
+sudo docker build -t mymavenapp .          # Build Docker image
+sudo docker run -d -p 9090:9090 mymavenapp # Run app on port 9090
+
+# Do this: Copy EC2 Public IP
+# visit in browser:
+# http://<public-ip>:9090
+
+
+# STEP 5: (If page not loading)
+# Do this: Go to EC2 → Security Groups → Edit inbound rules
+# Add rule: Custom TCP → Port 9090 → Source 0.0.0.0/0 → Save changes
+# Do this: Refresh browser page
+
+
+# STEP 6: Stop Container and Terminate Instance
+sudo docker ps
+sudo docker stop <container-id>
+
+# Do this: Terminate EC2 instance → End Lab
+# ===================== END MAVEN WEB PROJECT DEPLOYMENT =====================
+
