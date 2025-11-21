@@ -1,0 +1,174 @@
+WEEK 8 – JENKINS AUTOMATION
+Complete Instructions (Ready to Copy-Paste)
+
+---------------------------------------------------
+A. OVERALL TASK FOR WEEK 8
+---------------------------------------------------
+1) Set up Jenkins and required tools.
+2) Create AUTOMATION for:
+   - Maven Java project (MavenJava_Build + MavenJava_Test + pipeline view).
+   - Maven Web project (MavenWeb_Build + MavenWeb_Test + MavenWeb_Deploy + pipeline view + Tomcat deploy).
+3) Run all pipelines and verify they are successful (green).
+4) Take CLEAR screenshots of all important steps (jobs, builds, pipeline, Tomcat output).
+5) Answer all Jenkins theory questions given in the document.
+6) Upload your screenshots and question answers as instructed.
+
+---------------------------------------------------
+C. MAVEN JAVA AUTOMATION – DETAILED STEPS
+---------------------------------------------------
+
+C1. OPEN JENKINS
+1) Open browser → Go to: http://localhost:8080
+2) Login to Jenkins.
+
+C2. CREATE FREESTYLE PROJECT: MavenJava_Build
+1) Jenkins dashboard → Click "New Item".
+2) Enter name: MavenJava_Build
+3) Choose: Freestyle project
+4) Click "OK".
+
+C3. CONFIGURE MavenJava_Build JOB
+1) Add description: Java Build demo
+2) Go to "Source Code Management" → Select "Git"
+   - Paste your repo URL
+   - Branch: */main OR */master
+3) Go to "Build"
+   - Add build step → Invoke top-level Maven targets → Goals: clean
+   - Add build step → Invoke top-level Maven targets → Goals: install
+4) Go to "Post-build Actions"
+   - Archive the artifacts → Files: **/*
+   - Build other projects → MavenJava_Test → Trigger: Only if build is stable
+5) Click Apply → Save
+
+C4. CREATE FREESTYLE PROJECT: MavenJava_Test
+1) New Item → MavenJava_Test → Freestyle → OK
+
+C5. CONFIGURE MavenJava_Test
+1) Add description: Test demo
+2) Build Environment → Tick: Delete workspace before build starts
+3) Build:
+   - Add build step → Copy artifacts from another project
+     - Project name: MavenJava_Build
+     - Build: Stable build only
+     - Artifacts: **/*
+   - Add build step → Invoke top-level Maven targets
+     - Goals: test
+4) Post-build Actions:
+   - Archive the artifacts → Files: **/*
+5) Apply → Save
+
+C6. CREATE PIPELINE VIEW: MavenJava_Pipeline
+1) Dashboard → + New View
+2) Name: MavenJava_Pipeline
+3) View Type: Build Pipeline View
+4) OK
+5) Pipeline Flow:
+   - Layout: Based on upstream/downstream relationship
+   - Initial job: MavenJava_Build
+6) Apply → Save
+
+C7. RUN PIPELINE & VERIFY
+1) Open MavenJava_Pipeline view
+2) Click "Run"
+3) Verify pipeline turns green:
+   - Build success
+   - Test success
+4) Check console output
+5) Take screenshots of:
+   - Jobs
+   - Build & test success
+   - Pipeline (green)
+
+---------------------------------------------------
+D. MAVEN WEB AUTOMATION – DETAILED STEPS
+---------------------------------------------------
+
+D1. OPEN JENKINS
+1) Visit: http://localhost:8080
+
+D2. CREATE JOB: MavenWeb_Build
+1) New Item → MavenWeb_Build → Freestyle → OK
+
+D3. CONFIGURE MavenWeb_Build
+1) Description: Web Build demo
+2) Source Code Management:
+   - Git repo URL
+   - Branch */main OR */master
+3) Build:
+   - clean
+   - install
+4) Post-build actions:
+   - Archive artifacts: **/*
+   - Build other projects → MavenWeb_Test (Only if stable)
+5) Apply → Save
+
+D4. CREATE JOB: MavenWeb_Test
+1) New Item → MavenWeb_Test → Freestyle → OK
+
+D5. CONFIGURE MavenWeb_Test
+1) Description: Test demo
+2) Build environment → Delete workspace before build
+3) Build:
+   - Copy artifacts from MavenWeb_Build → Stable → **/*
+   - Invoke Maven targets → test
+4) Post-build:
+   - Archive artifacts: **/*
+   - Build MavenWeb_Deploy
+5) Apply → Save
+
+D6. CREATE JOB: MavenWeb_Deploy
+1) New Item → MavenWeb_Deploy → Freestyle → OK
+
+D7. CONFIGURE MAVENWEB_DEPLOY
+1) Description: Web Code Deployment
+2) Build Environment → Delete workspace before build
+3) Build:
+   - Copy artifacts from MavenWeb_Test → Stable → **/*
+4) Post-build actions:
+   - Deploy WAR/EAR to container
+     - WAR/EAR File: **/*.war
+     - Context path: Webpath
+     - Container: Tomcat 9.x remote
+       - URL: https://localhost:8085/
+       - Credentials: admin / 1234
+5) Apply → Save
+
+D8. CREATE PIPELINE VIEW: MavenWeb_Pipeline
+1) Dashboard → + → Build Pipeline View
+2) Name: MavenWeb_Pipeline → OK
+3) Initial job: MavenWeb_Build
+4) Apply → Save
+
+D9. RUN WEB PIPELINE & VERIFY
+1) Open MavenWeb_Pipeline
+2) Run pipeline
+3) Verify:
+   - Build → Test → Deploy (all green)
+4) Open Tomcat manager:
+   - https://localhost:8085/
+   - Login: admin / 1234
+5) Click /webpath & confirm app runs
+6) Take screenshots
+
+---------------------------------------------------
+F. SCREENSHOTS TO TAKE
+---------------------------------------------------
+✔ Jenkins dashboard with jobs visible  
+✔ Build & test job configuration screens  
+✔ Pipeline views (green)  
+✔ Console output success  
+✔ Tomcat manager page with /webpath  
+✔ Running web application page  
+
+---------------------------------------------------
+G. FINAL SUBMISSION CHECKLIST
+---------------------------------------------------
+☑ Pipelines working and green  
+☑ Tomcat deployment successful  
+☑ All screenshots captured and labelled  
+☑ Theory questions answered separately in Word/PDF  
+☑ Upload screenshots + answers  
+
+---------------------------------------------------
+WEEK 8 TASK COMPLETE
+---------------------------------------------------
