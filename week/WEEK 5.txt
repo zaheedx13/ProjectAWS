@@ -1,0 +1,230 @@
+WEEK 5 – STEP-BY-STEP LAB EXECUTION (Docker CLI + Dockerfile)
+FINAL COPY & FOLLOW FORMAT
+
+--------------------------------------------------------
+PHASE 0 — APPLICATIONS TO OPEN
+--------------------------------------------------------
+
+Step 1: Open **Docker Desktop**
+        (Wait until it says: Docker Engine is running)
+
+Step 2: Open **Git Bash** (Windows) or **Terminal** (Linux/Mac)
+        Right-click → Run as Administrator (Windows only)
+
+--------------------------------------------------------
+PHASE 1 — BASIC DOCKER REDIS CONTAINER (OFFICIAL IMAGE)
+--------------------------------------------------------
+
+Step 3: Pull Redis image from Docker Hub
+Type in Terminal:
+    docker pull redis
+
+Step 4: Run Redis container in background mode
+    docker run --name my-redis -d redis
+
+Step 5: Check running containers
+    docker ps
+
+Step 6: Open Redis CLI inside the running container
+    docker exec -it my-redis redis-cli
+
+Step 7: Set a value in Redis
+    SET name "Alice"
+
+Step 8: Retrieve value from Redis
+    GET name
+
+Step 9: Exit from Redis CLI
+    exit
+
+Step 10: Stop container
+    docker stop my-redis
+
+Step 11: Restart same container
+    docker start my-redis
+
+Step 12: Verify running container
+    docker ps
+
+Step 13: Stop container before deletion
+    docker stop my-redis
+
+Step 14: Remove container
+    docker rm my-redis
+
+Step 15: Remove Redis image
+    docker rmi redis
+
+--------------------------------------------------------
+PHASE 2 — CREATE CUSTOM IMAGE USING DOCKERFILE
+--------------------------------------------------------
+
+Step 16: Create folder for Dockerfile
+
+Windows:
+    Create folder manually: C:\DockerProjects\Redis
+    Open Git Bash → type:
+    cd /c/DockerProjects/Redis
+
+Linux/Mac:
+    mkdir -p ~/DockerProjects/Redis
+    cd ~/DockerProjects/Redis
+
+Step 17: Create Dockerfile
+    nano Dockerfile     (or use Notepad/VS Code to create file)
+
+Step 18: Paste below content into Dockerfile:
+
+FROM redis:latest
+CMD ["redis-server"]
+
+Step 19: Save and exit editor
+Nano: Ctrl + O → Enter → Ctrl + X
+
+--------------------------------------------------------
+PHASE 3 — BUILD & RUN CUSTOM IMAGE (redisnew)
+--------------------------------------------------------
+
+Step 20: Build image from Dockerfile
+    docker build -t redisnew .
+
+Step 21: Verify Docker images
+    docker images
+
+Step 22: Run container from custom image
+    docker run --name myredisnew -d redisnew
+
+Step 23: Check running containers
+    docker ps
+
+Step 24: Open Redis CLI in custom container
+    docker exec -it myredisnew redis-cli
+
+Step 25: Set value
+    SET name "Abcdef"
+
+Step 26: Get value
+    GET name
+
+Step 27: Exit CLI
+    exit
+
+Step 28: Stop container
+    docker stop myredisnew
+
+--------------------------------------------------------
+PHASE 4 — LOGIN & COMMIT IMAGE
+--------------------------------------------------------
+
+Step 29: Login to Docker Hub
+    docker login
+Enter Username + Password/Token when prompted
+
+Step 30: List all containers (including stopped)
+    docker ps -a
+
+Step 31: Note the container ID of **myredisnew**
+Example:
+    0e993d2009a1
+
+Step 32: Commit container to create your own image
+Example:
+    docker commit 0e993d2009a1 yourdockerusername/redis1
+
+Step 33: Check images
+    docker images
+
+--------------------------------------------------------
+PHASE 5 — PUSH IMAGE TO DOCKER HUB
+--------------------------------------------------------
+
+Step 34: Push your custom image
+    docker push yourdockerusername/redis1
+
+Step 35: Open browser → login to https://hub.docker.com
+         Go to **Repositories** → confirm redis1 is listed
+
+--------------------------------------------------------
+PHASE 6 — CLEAN ALL LOCAL RESOURCES
+--------------------------------------------------------
+
+Step 36: List containers
+    docker ps -a
+
+Step 37: Remove container (replace ID with actual ID)
+    docker rm 0e993d2009a1
+
+Step 38: List images
+    docker images
+
+Step 39: Remove image locally
+    docker rmi yourdockerusername/redis1
+
+Step 40: Confirm removal
+    docker ps -a
+    docker images
+
+--------------------------------------------------------
+PHASE 7 — PULL FROM DOCKER HUB & TEST AGAIN
+--------------------------------------------------------
+
+Step 41: Pull image from Docker Hub
+    docker pull yourdockerusername/redis1
+
+Step 42: Run container again
+    docker run --name myredis -d yourdockerusername/redis1
+
+Step 43: Check containers
+    docker ps
+
+Step 44: Open Redis CLI
+    docker exec -it myredis redis-cli
+
+Step 45: Test key insert
+    SET name "Abcdef"
+
+Step 46: Test key read
+    GET name
+
+Step 47: Exit
+    exit
+
+Step 48: Stop container
+    docker stop myredis
+
+Step 49: Remove container
+    docker rm <container-id>
+
+Step 50: Remove image
+    docker rmi yourdockerusername/redis1
+
+Step 51: Logout (optional)
+    docker logout
+
+--------------------------------------------------------
+PHASE 8 — FINAL CHECK
+--------------------------------------------------------
+
+Step 52: Run:
+    docker ps
+
+Step 53:
+    docker ps -a
+
+Step 54:
+    docker images
+
+--------------------------------------------------------
+SCREENSHOTS REQUIRED
+--------------------------------------------------------
+
+📸 Running container (docker ps)
+📸 Redis CLI SET + GET output
+📸 docker images (before & after push)
+📸 Docker Hub repository screenshot
+📸 docker build output
+📸 docker push and docker pull output
+
+--------------------------------------------------------
+END OF WEEK-5 LAB ACTIVITY
+--------------------------------------------------------

@@ -1,0 +1,182 @@
+WEEK 2 – LAB EXECUTION ACTION PLAN (FINAL COPY & FOLLOW FORMAT)
+
+--------------------------------------------------------
+TASK 1: PUSH MULTI-FOLDER PROJECT TO A PRIVATE GITHUB REPOSITORY
+--------------------------------------------------------
+
+Step 1: Create a Private GitHub Repository
+1. Open Chrome browser
+2. Type in address bar: https://github.com
+3. Login to your GitHub account
+4. Click the **+** icon (top right) → Click **New repository**
+5. Enter repository name
+6. Select **Private**
+7. Click **Create Repository**
+
+Step 2: Initialize Git inside your local project
+1. Open **Git Bash / Terminal**
+2. Go to your project folder:
+   cd path/to/your/project
+3. Initialize Git:
+   git init
+
+Step 3: Add Remote Repository
+1. Copy HTTPS link from the GitHub repository page (Code → HTTPS → copy)
+2. Paste and run in Git Bash:
+   git remote add origin https://github.com/yourusername/repositoryname.git
+
+Step 4: Add Files & Commit
+Type in Git Bash:
+   git add .
+   git commit -m "Initial commit"
+
+Step 5: Push to GitHub
+If your branch is master:
+   git push -u origin master
+If your branch is main (GitHub default):
+   git push -u origin main
+
+Expected Output:
+✓ Repo folder visible on GitHub
+
+--------------------------------------------------------
+TASK 2: EXPLORE IMPORTANT GIT COMMANDS (Run in Git Bash inside the project)
+--------------------------------------------------------
+
+Check Version:
+   git --version
+
+Set Username & Email:
+   git config --global user.name "Your Name"
+   git config --global user.email "youremail@example.com"
+   git config --list
+
+Remote Commands:
+   git remote -v
+   git remote add origin https://github.com/username/repo.git
+   git push origin main
+   git pull origin main
+   git remote remove origin
+   git remote rename origin backup
+   git fetch origin
+   git remote set-url origin https://github.com/username/new-repo.git
+   git remote show origin
+
+Staging + Commit:
+   git status
+   git add filename.txt
+   git add .
+   git commit -m "Commit message"
+
+Branching Commands:
+   git branch
+   git branch -a
+   git branch new-branch
+   git branch -d branch-name
+   git branch -r
+   git checkout branch-name
+   git checkout -b new-branch
+   git merge branch-name
+   git remote prune origin
+   git fetch origin feature-branch
+   git push --set-upstream origin feature-branch
+
+History + Compare:
+   git log
+   git log --oneline
+   git diff
+   git show <commit-id>
+
+Undo / Reset / Fix:
+   git reset filename
+   git restore filename
+   git revert <commit-id>
+   git commit --amend -m "Corrected message"
+   git reflog
+
+Delete Branches:
+   git branch -d name
+   git branch -D name
+   git branch -d branch1 branch2 branch3
+
+Gitignore:
+   touch .gitignore
+Inside .gitignore add:
+   *.log
+   temp/
+   *.bak
+
+Find who changed a file line:
+   git blame script.py
+
+Stash Code:
+   git stash
+   git switch another-branch
+   git switch main
+   git stash apply
+
+--------------------------------------------------------
+HOW TO CREATE A MERGE CONFLICT (SELF PRACTICE)
+--------------------------------------------------------
+
+Step 1: In Git Bash run:
+   git checkout -b feature-branch
+
+Step 2: Open VS Code (Right-click project folder → Open with Code)
+Edit file `app.js`
+Add line:
+   console.log("This is from feature branch");
+
+Save file in VS Code
+
+Back in Git Bash:
+   git add app.js
+   git commit -m "Feature branch change"
+
+Step 3: Switch to main branch
+   git checkout main
+
+Step 4: Edit SAME FILE & SAME LINE in VS Code
+Replace text with:
+   console.log("This is from main branch");
+
+Save → then in Git Bash:
+   git add app.js
+   git commit -m "Main branch change"
+
+Step 5: Merge to produce conflict
+   git merge feature-branch
+
+Expected output:
+   CONFLICT (content): Merge conflict in app.js
+
+--------------------------------------------------------
+RESOLVING MERGE CONFLICT
+--------------------------------------------------------
+
+Step 6: Open file app.js in VS Code
+You will see markers:
+
+<<<<<<< HEAD
+console.log("This is from main branch");
+=======
+console.log("This is from feature branch");
+>>>>>>> feature-branch
+
+Step 7: Manually edit the line to final content:
+console.log("Final merged result");
+
+Step 8: Delete all conflict markers:
+<<<<<<<  =======  >>>>>>>
+
+Step 9: Back to Git Bash:
+   git add app.js
+   git commit -m "Resolved merge conflict"
+
+Expected:
+✓ Merge successful
+✓ No errors
+
+--------------------------------------------------------
+END OF WEEK-2 LAB TASK
+--------------------------------------------------------

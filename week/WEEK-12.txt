@@ -1,0 +1,243 @@
+WEEK-12 – COMPLETE STEP-WISE LAB EXECUTION (ONE COPY-PASTE BLOCK)
+Deployment of index.html and Maven Web Project on EC2 using Docker
+
+--------------------------------------------------------
+PHASE 1 — OPEN AWS LAB ENVIRONMENT & CREATE EC2 INSTANCE
+--------------------------------------------------------
+
+Step 1: Open Chrome browser
+Step 2: Open AWS Academy Lab (Start Lab button)
+        Wait until AWS icon turns GREEN
+
+Step 3: Click on AWS (top right)
+
+Step 4: In AWS Console → On top search bar, type: EC2
+Step 5: Click EC2
+
+Step 6: Click "Launch Instance"
+
+---- INSTANCE CONFIGURATION ----
+Step 7: Name: ubuntu
+Step 8: Under Application and OS images → Select: Ubuntu (Free tier eligible 64-bit)
+Step 9: Instance type: t2.micro
+Step 10: Key pair → Click "Create new key pair"
+         • Give a name
+         • Download .pem file (Save in Desktop → AWS folder)
+
+Step 11: Network Settings → Click Edit
+         • Enable HTTP (port 80)
+         • Enable HTTPS (port 443)
+         • Allow SSH (port 22)
+
+Step 12: Storage → keep default 8GB
+Step 13: Click "Launch Instance"
+
+Step 14: Left side menu → Click "Instances"
+Step 15: Wait until instance status shows:
+         ✔ Running
+         ✔ 2/2 status checks passed
+
+Step 16: Tick the instance checkbox
+Step 17: Click "Connect"
+Step 18: Click "SSH client" tab
+Step 19: Copy the SSH command displayed on screen
+         Example:
+         ssh -i "awskey.pem" ubuntu@ec2-xx-xxx-xx-xxx.compute.amazonaws.com
+
+--------------------------------------------------------
+PHASE 2 — CONNECT LOCAL SYSTEM TO EC2 THROUGH SSH
+--------------------------------------------------------
+
+Step 20: Open application: PowerShell (Run as Administrator)
+Step 21: Navigate to folder where .pem key is stored:
+         cd <path-of-key-file>
+Example:
+         cd D:\AWS
+
+Step 22: Paste and run the SSH command copied from AWS:
+         ssh -i "awskey.pem" ubuntu@<your-public-dns>
+
+Expected: Ubuntu terminal opens
+Output should show:
+         ubuntu@ip-xxx-xxx-xxx:~$
+
+--------------------------------------------------------
+PHASE 3 — INSTALL REQUIRED SOFTWARE ON EC2
+--------------------------------------------------------
+
+Step 23: In Ubuntu terminal type:
+         sudo apt update
+
+Step 24: Install Docker:
+         sudo apt-get install docker.io
+
+Step 25: Install Git:
+         sudo apt install git
+
+Step 26: Install nano editor:
+         sudo apt install nano
+
+--------------------------------------------------------
+PART A — DEPLOY INDEX.HTML USING DOCKER ON EC2
+--------------------------------------------------------
+
+Step 27: Create sample web app locally before deployment:
+         Create folder named Example
+         Inside it create file: index.html
+
+Step 28: Right-click inside Example folder → Open Git Bash
+
+Step 29: Run following Git commands:
+         git init
+         git add .
+         git commit -m "first commit"
+
+Step 30: Create GitHub repository manually on website
+
+Step 31: Copy repository commands from GitHub page and run:
+         git branch -M main
+         git remote add origin <repo-url>
+         git push -u origin main
+
+Step 32: Back in EC2 Ubuntu terminal:
+         git clone <repo-url>
+
+Step 33: Move into folder:
+         cd <folder-name>
+         ls
+
+Step 34: Create Dockerfile:
+         nano Dockerfile
+
+Step 35: Paste the below content:
+
+FROM nginx:latest
+COPY index.html /usr/share/nginx/html/index.html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+Step 36: Save file:
+         ctrl + O → Enter → ctrl + X
+
+Step 37: Build Docker image:
+         sudo docker build -t mywebapp .
+
+Step 38: Run container:
+         sudo docker run -d -p 80:80 --name app-demo mywebapp
+
+Step 39: Go back to AWS Console → Instances
+Step 40: Copy Public IPv4 address
+
+Step 41: Open Chrome
+         Paste:
+         http://<public-ip>
+
+Expected Output: Page displays content of index.html
+
+If page doesn’t load → fix inbound rules
+
+Step 42: Click Security → Click Security Groups
+Step 43: Edit inbound rules → Add rule:
+         HTTP | 80 | 0.0.0.0/0 | Save
+
+Step 44: Refresh browser
+
+--------------------------------------------------------
+CLEANUP AFTER PART A
+--------------------------------------------------------
+
+Step 45: In Ubuntu terminal:
+         sudo docker ps
+         sudo docker stop <container-id>
+         sudo docker rm <container-id>
+
+Step 46: In AWS Console:
+         Instances → Select instance → Instance state → Terminate Instance
+
+--------------------------------------------------------
+PART B — DEPLOY MAVEN WEB PROJECT USING DOCKER ON EC2
+--------------------------------------------------------
+
+Step 47: Create new EC2 instance again (repeat Steps 1-19 at top)
+
+Step 48: Open PowerShell again → navigate to key directory → SSH connect:
+         ssh -i "awskey.pem" ubuntu@<public-dns>
+
+Step 49: Run software install commands:
+         sudo apt update
+         sudo apt-get install docker.io
+         sudo apt install git
+         sudo apt install nano
+
+Step 50: Open GitHub Maven project repo → Click Code → Copy HTTPS URL
+
+Step 51: Clone inside EC2:
+         git clone <maven-repo-url>
+
+Step 52: Navigate to folder:
+         cd <foldername>
+         ls
+
+Step 53: Create Dockerfile:
+         nano Dockerfile
+
+Step 54: Paste below content:
+
+FROM tomcat:9.0
+COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
+
+Step 55: Save Dockerfile:
+         ctrl+O → Enter → ctrl+X
+
+Step 56: Build docker image:
+         sudo docker build -t mavenwebapp .
+
+Step 57: Run container:
+         sudo docker run -d --name app-demo -p 9090:8080 mavenwebapp
+
+Step 58: Go to AWS → Instances
+Step 59: Copy Public IPv4
+
+Step 60: Open browser:
+         http://<public-ip>:9090
+
+Expected Output: Maven web application loads
+
+If app not visible:
+
+Step 61: Fix inbound rule:
+         AWS → Security → Security Groups → Edit inbound rules
+         Add:
+         Custom TCP | 9090 | 0.0.0.0/0 | Save
+
+Step 62: Refresh browser
+
+--------------------------------------------------------
+CLEANUP AFTER PART B
+--------------------------------------------------------
+
+Step 63: Stop containers:
+         sudo docker ps
+         sudo docker stop <container-id>
+
+Step 64: Go to AWS Instance state:
+         Terminate Instances
+
+Step 65: End Lab
+
+--------------------------------------------------------
+REQUIRED SCREENSHOTS
+--------------------------------------------------------
+
+📸 EC2 instance Running screen
+📸 SSH terminal connected
+📸 Docker build output
+📸 Docker run output
+📸 kubectl get service (if shown)
+📸 index.html output in browser
+📸 Maven Web app page output
+📸 Security inbound rule change page
+
+--------------------------------------------------------
+END OF WEEK-12 LAB EXECUTION
+--------------------------------------------------------

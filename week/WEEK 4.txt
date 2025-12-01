@@ -1,0 +1,230 @@
+WEEK 4 – STEP-BY-STEP LAB EXECUTION (FINAL WITH FULL pom.xml INCLUDED)
+
+--------------------------------------------------------
+PHASE 1 — CREATE MAVEN JAVA PROJECT & BUILD
+--------------------------------------------------------
+
+Step 1: Open **Eclipse IDE**
+Step 2: Click **Help → Eclipse Marketplace**
+Step 3: Search: **Maven Integration for Eclipse**
+Step 4: Install if not installed → Restart Eclipse
+
+Step 5: Click **File → New → Project**
+Step 6: Expand **Maven**
+Step 7: Select **Maven Project** → Click **Next**
+Step 8: Keep default location → **Next**
+Step 9: Choose archetype:
+        org.apache.maven.archetypes → maven-archetype-quickstart (v1.4)
+        Click **Next**
+Step 10: Enter:
+         Group Id: com.example
+         Artifact Id: my-maven-project
+Step 11: Click **Finish**
+
+Step 12: Right-click project → Maven → **Update Project** → OK
+Step 13: Expand **src/main/java** → Open **App.java**
+
+---- RUN MAVEN BUILD ----
+Step 14: Right-click project → Run As → **Maven Clean**
+Step 15: Right-click project → Run As → **Maven Install**
+Step 16: Right-click project → Run As → **Maven Test**
+Step 17: Right-click project → Run As → **Maven Build**
+         Goals: clean install test → Apply → Run
+
+Expected:
+       BUILD SUCCESS
+
+Step 18: Right-click **App.java** → Run As → Java Application
+Expected Output:
+       Hello World
+
+--------------------------------------------------------
+PHASE 2 — ADD DEPENDENCY & REBUILD (FULL pom.xml HERE)
+--------------------------------------------------------
+
+Step 19: Double-click **pom.xml**
+Replace entire pom.xml file with:
+
+----- FULL pom.xml (COPY & PASTE THIS ENTIRE FILE) -----
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example</groupId>
+  <artifactId>my-maven-project</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <source>17</source>
+          <target>17</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
+--------------------------------------------------------
+
+Step 20: Save file (Ctrl + S)
+Step 21: Right-click project → Maven → Update Project
+Step 22: Run As → Maven Clean
+Step 23: Run As → Maven Install
+Expected:
+       BUILD SUCCESS
+
+--------------------------------------------------------
+PHASE 3 — CREATE MAVEN WEB PROJECT & DEPLOY ON TOMCAT
+--------------------------------------------------------
+
+Step 24: File → New → Project → Maven Project → Next → Next
+Step 25: Select archetype:
+         maven-archetype-webapp (1.4)
+Step 26: Enter:
+         Group Id: com.example
+         Artifact Id: my-web-app
+         Finish
+
+Step 27: Open browser → https://mvnrepository.com
+Step 28: Search: **Java Servlet API**
+Step 29: Copy latest dependency
+
+Step 30: Open pom.xml
+Replace entire content with the following full pom.xml:
+
+----- FULL pom.xml FOR WEB PROJECT (COPY & PASTE) -----
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example</groupId>
+  <artifactId>my-web-app</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>4.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>my-web-app</finalName>
+  </build>
+
+</project>
+
+--------------------------------------------------------
+
+Step 31: Save pom.xml → Right-click → Maven → Update Project
+
+---- ADD TOMCAT SERVER ----
+Step 32: Window → Show View → Servers
+Step 33: Click link to create new server
+Step 34: Select **Apache Tomcat v9.0**
+Step 35: Select Tomcat installation folder
+Step 36: Click Finish
+
+---- BUILD & DEPLOY ----
+Step 37: Right-click project → Run As → Maven Build
+         Goals: clean install test → Run
+Step 38: Right-click **index.jsp**
+         Run As → Run on Server
+         Select **Tomcat v9**
+Expected:
+       Hello World webpage loads in browser
+
+--------------------------------------------------------
+PHASE 4 — CREATE EXECUTABLE JAR (FULL pom.xml)
+--------------------------------------------------------
+
+Step 39: Open pom.xml of Java project again
+Replace with this FULL version including jar plugin:
+
+----- FULL pom.xml FOR JAR BUILD -----
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example</groupId>
+  <artifactId>my-maven-project</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <source>17</source>
+          <target>17</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.example.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
+--------------------------------------------------------
+
+Step 40: Create Main.java and add main() method
+Step 41: Open terminal inside project
+         mvn package
+Step 42: Run JAR:
+         java -jar target/my-maven-project-1.0-SNAPSHOT.jar
+
+--------------------------------------------------------
+END OF WEEK-4 LAB
+--------------------------------------------------------

@@ -1,0 +1,172 @@
+WEEK 11 – STEP-WISE LAB EXECUTION (ONE COMPLETE BLOCK)
+Jenkins CI/CD using GitHub Webhooks + Email Notifications + UML Diagrams
+
+--------------------------------------------------------
+PHASE 1 — OPEN APPLICATIONS & START REQUIRED SERVICES
+--------------------------------------------------------
+
+Step 1: Open the application: Jenkins
+        • Open Chrome
+        • Type in address bar: http://localhost:8080
+        • Login with Jenkins credentials
+
+Step 2: Open Docker Desktop
+        • Ensure it shows: "Docker engine is running"
+
+Step 3: Open Command Prompt
+        • Click Start → search CMD → Right-click → Run as Administrator
+
+--------------------------------------------------------
+PHASE 2 — START NGROK TUNNEL FOR WEBHOOKS
+--------------------------------------------------------
+
+Step 4: In Command Prompt, type:
+        ngrok http 8080
+
+Step 5: Copy the HTTPS Forwarding URL shown on the screen
+Example:
+https://abcdefgh1234.ngrok-free.dev
+
+--------------------------------------------------------
+PHASE 3 — CONFIGURE GITHUB WEBHOOK
+--------------------------------------------------------
+
+Step 6: Open browser → go to https://github.com
+Step 7: Open your repository
+Step 8: Click: Settings (top menu)
+Step 9: Click: Webhooks (left side)
+Step 10: Click: Add Webhook (green button)
+
+Step 11: In Payload URL field, paste:
+         https://<your-ngrok-url>/github-webhook/
+
+Step 12: Content type → Select:
+         application/json
+
+Step 13: Choose trigger type:
+         Just the push event
+
+Step 14: Click Add Webhook
+
+--------------------------------------------------------
+PHASE 4 — CONFIGURE JENKINS JOB TO USE WEBHOOKS
+--------------------------------------------------------
+
+Step 15: Go back to Jenkins Dashboard in Browser
+Step 16: Click your Job name (or create new Job → New Item → Freestyle Project → OK)
+Step 17: Click Configure (left side menu)
+
+Step 18: Scroll to Build Triggers
+Step 19: Select:
+         ☑ GitHub hook trigger for GITScm polling
+
+Step 20: Click Save
+
+--------------------------------------------------------
+PHASE 5 — TEST AUTOMATIC TRIGGER FROM GITHUB
+--------------------------------------------------------
+
+Step 21: Open VS Code / any editor
+Step 22: Make a small change in README.md
+Step 23: Open Git Bash inside project folder and type:
+         git add .
+         git commit -m "webhook test"
+         git push
+
+Step 24: Switch to Jenkins dashboard window
+Expected:
+🔄 Build starts automatically WITHOUT clicking Build Now
+
+Step 25: Click latest Build number (#1 or #2)
+Step 26: Click Console Output
+Expected:
+BUILD SUCCESS (Green text)
+
+--------------------------------------------------------
+PHASE 6 — JENKINS EMAIL NOTIFICATION SETUP
+--------------------------------------------------------
+
+Step 27: In Jenkins Dashboard click:
+         Manage Jenkins (left menu)
+
+Step 28: Click Manage Plugins
+Step 29: Go to Available tab
+Step 30: Search: Email Extension Plugin
+Step 31: Select & click Install → Restart Jenkins
+
+Step 32: After restart → Manage Jenkins → Configure System
+
+Step 33: Scroll to Email Notification section
+Fill values:
+SMTP Server: smtp.gmail.com
+Use SMTP Authentication: ☑ Enabled
+User Name: your Gmail address
+Password: 16-digit Gmail App Password
+Use SSL: ☑ Enabled
+Port: 465
+
+Step 34: Click Test configuration
+Enter your email → confirm test mail received
+Step 35: Scroll down → Click Save
+
+--------------------------------------------------------
+PHASE 7 — CONFIGURE EMAILS FOR JOB RESULTS
+--------------------------------------------------------
+
+Step 36: Open Jenkins Dashboard → Click your Job
+Step 37: Click Configure
+Step 38: Scroll to Post-build Actions
+Step 39: Click:
+         Add post-build action → Editable Email Notification
+
+Step 40: Set:
+Project Recipient List: yourEmail@gmail.com
+Content Type: text/plain
+
+Step 41: Under Triggers:
+         ☑ Success
+         ☑ Failure
+
+Step 42: Click Save
+
+--------------------------------------------------------
+PHASE 8 — TRIGGER BUILD FOR EMAIL TEST
+--------------------------------------------------------
+
+Step 43: Click Build Now (left menu)
+Step 44: Click Console Output
+Step 45: Check email inbox → verify success email received
+
+Step 46: Create a failing case (optional)
+         Delete a dependency or break build → push to GitHub
+Expected:
+❌ Failure email received
+
+--------------------------------------------------------
+PHASE 9 — UML DIAGRAMS (III-I PROJECT)
+--------------------------------------------------------
+
+Step 47: Open the application: Draw.io or StarUML
+Step 48: Create diagrams required:
+         • Class Diagram
+         • Sequence Diagram
+         • Component Diagram
+
+Step 49: Export each diagram:
+         File → Export → PNG (or PDF)
+Step 50: Save to Desktop and upload in LMS/project folder
+
+--------------------------------------------------------
+REQUIRED SCREENSHOTS
+--------------------------------------------------------
+
+📌 SS1: Jenkins Dashboard
+📌 SS2: GitHub Webhook settings screen
+📌 SS3: Ngrok forwarding URL window
+📌 SS4: Jenkins console showing auto build from webhook
+📌 SS5: Email received build success/failure screenshot
+📌 SS6: UML diagrams exported
+
+--------------------------------------------------------
+END OF WEEK-11 LAB EXECUTION
+--------------------------------------------------------

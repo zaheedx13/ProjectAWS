@@ -1,0 +1,192 @@
+WEEK 7 – STEP-BY-STEP LAB EXECUTION (Maven Multi-Module Project)
+FINAL COPY & FOLLOW FORMAT
+
+--------------------------------------------------------
+PHASE 1 — CREATE PARENT MULTI-MODULE PROJECT
+--------------------------------------------------------
+
+Step 1: Open **Eclipse IDE**
+Step 2: Top menu → Click **File → New → Other**
+Step 3: Expand **Maven**
+Step 4: Select **Maven Project** → Click **Next**
+Step 5: Tick checkbox: **Create a Simple Project (skip archetype selection)**
+Step 6: Click **Next**
+Step 7: Enter:
+        Group Id: KMIT
+        Artifact Id: MultiModule
+Step 8: Packaging → Select **pom**
+Step 9: Name: Multimodule creation
+        Description: Sample multimodule with parent child hierarchy
+Step 10: Click **Finish**
+
+Expected Output:
+A Parent Maven project named **MultiModule** appears in Project Explorer.
+
+--------------------------------------------------------
+PHASE 2 — CREATE FIRST CHILD MODULE (MODULE-1)
+--------------------------------------------------------
+
+Step 11: Right-click the parent project (**MultiModule**)
+Step 12: Click **New → Maven Module**
+Step 13: Tick: **Create a Simple Project**
+Step 14: Click **Next**
+Step 15: Enter Artifact Id:
+         MultiModuleChild1
+Step 16: Click **Next**, then **Finish**
+
+Expected Output:
+Child module **MultiModuleChild1** is created.
+
+--------------------------------------------------------
+PHASE 3 — CREATE SECOND CHILD MODULE (WEB MODULE)
+--------------------------------------------------------
+
+Step 17: Right-click parent project **MultiModule**
+Step 18: Click **New → Maven Module**
+Step 19: Enter Artifact Id:
+         MultiModuleChild2
+Step 20: In archetype filter search box type:
+         maven-archetype-webapp
+Step 21: Select version **1.1** or **1.5**
+Step 22: Click **Next → Finish**
+Step 23: When asked Y/N in console → type **Y** → press Enter
+
+Expected Output:
+Web module **MultiModuleChild2** is added.
+
+--------------------------------------------------------
+PHASE 4 — UPDATE POM.XML FILES (FULL FILES BELOW)
+--------------------------------------------------------
+
+### PARENT pom.xml (COPY THIS ENTIRE FILE)
+--------------------------------------------------------
+
+Open **pom.xml** in Parent (MultiModule) and replace all content with:
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>KMIT</groupId>
+  <artifactId>MultiModule</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>MultiModuleChild1</module>
+    <module>MultiModuleChild2</module>
+  </modules>
+
+</project>
+
+--------------------------------------------------------
+
+### CHILD-1 pom.xml (MultiModuleChild1)
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>KMIT</groupId>
+    <artifactId>MultiModule</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>MultiModuleChild1</artifactId>
+  <packaging>jar</packaging>
+
+</project>
+
+--------------------------------------------------------
+
+### CHILD-2 pom.xml (MultiModuleChild2 WEB MODULE)
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>KMIT</groupId>
+    <artifactId>MultiModule</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>MultiModuleChild2</artifactId>
+  <packaging>war</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>KMIT</groupId>
+      <artifactId>MultiModuleChild1</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+</project>
+
+--------------------------------------------------------
+
+PHASE 5 — BUILD ORDER (MOST IMPORTANT)
+--------------------------------------------------------
+
+Step 24: Right-click Parent Project (MultiModule)
+Step 25: Click **Run As → Maven Build**
+Step 26: In Goals box type:
+         clean install
+Step 27: Click **Run**
+Expected:
+         BUILD SUCCESS
+
+Step 28: Right-click **MultiModuleChild1 → Run As → Maven Build**
+Goals:
+         clean install
+Expected:
+         BUILD SUCCESS
+
+Step 29: Right-click **MultiModuleChild2 → Run As → Maven Build**
+Goals:
+         clean install
+Expected:
+         BUILD SUCCESS
+
+--------------------------------------------------------
+ERROR FIX
+--------------------------------------------------------
+
+If Child2 build fails:
+Reason:
+Child1 not installed before Child2
+Solution:
+Build in order:
+Parent → Child1 → Child2
+
+--------------------------------------------------------
+FINAL EXPECTED OUTPUT
+--------------------------------------------------------
+
+✔ Parent folder contains <modules> section
+✔ Both child modules build successfully
+✔ Child2 uses Child1 dependency
+✔ Target folder created in each module
+✔ Console shows BUILD SUCCESS for all modules
+
+--------------------------------------------------------
+SCREENSHOTS TO CAPTURE
+--------------------------------------------------------
+
+📸 Project Explorer showing parent and child modules  
+📸 Parent pom.xml showing <modules>  
+📸 Child2 pom.xml showing dependency block  
+📸 Console view showing 3x BUILD SUCCESS  
+
+--------------------------------------------------------
+END OF WEEK-7 LAB
+--------------------------------------------------------

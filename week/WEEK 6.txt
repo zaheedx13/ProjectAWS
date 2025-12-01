@@ -1,0 +1,263 @@
+WEEK 6 – STEP-BY-STEP LAB EXECUTION (Docker Compose)
+FINAL COPY & FOLLOW FORMAT
+
+--------------------------------------------------------
+PHASE 1 — OPEN REQUIRED APPLICATIONS & CREATE WORKSPACE
+--------------------------------------------------------
+
+Step 1: Open the application **Docker Desktop**
+        Wait until status shows: "Docker Engine is running"
+
+Step 2: Open **Git Bash / Terminal**
+        (Right-click → Run as Administrator on Windows)
+
+Step 3: Create a working folder for the lab
+Command:
+    mkdir compose-lab
+
+Step 4: Go inside the folder
+Command:
+    cd compose-lab
+
+--------------------------------------------------------
+PHASE 2 — CREATE docker-compose.yml (WEB + DB SERVICES)
+--------------------------------------------------------
+
+Step 5: Create file named docker-compose.yml
+Command:
+    nano docker-compose.yml       (or create manually in VS Code)
+
+Step 6: Paste the following content into the file:
+
+version: "3.9"
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo
+      POSTGRES_DB: demo_db
+
+Step 7: Save file
+Nano shortcut: Ctrl + O → Enter → Ctrl + X
+
+--------------------------------------------------------
+PHASE 3 — RUN MULTI-CONTAINER USING DOCKER COMPOSE
+--------------------------------------------------------
+
+Step 8: Start services in background mode
+Command:
+    docker compose up -d
+
+Step 9: Check running services
+Command:
+    docker compose ps
+
+Step 10: Open a browser (Chrome)
+Enter URL:
+    http://localhost:8080
+
+Expected Output:
+    Nginx Welcome Page
+
+--------------------------------------------------------
+PHASE 4 — ADD REDIS SERVICE & MODIFY COMPOSE FILE
+--------------------------------------------------------
+
+Step 11: Open docker-compose.yml again
+Command:
+    nano docker-compose.yml
+
+Step 12: Add new Redis service under services section:
+
+  redis:
+    image: redis:alpine
+
+Step 13: Add dependency inside web service:
+
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    depends_on:
+      - redis
+
+Step 14: Save the file (Ctrl+O, Enter, Ctrl+X)
+
+Step 15: Restart services
+Command:
+    docker compose up -d
+
+Step 16: Check status of all 3 services
+Command:
+    docker compose ps
+
+Expected:
+    web, db, redis = RUNNING
+
+--------------------------------------------------------
+PHASE 5 — DEPLOY SAME COMPOSE SETUP ON ANOTHER MACHINE
+--------------------------------------------------------
+
+Step 17: Zip the compose-lab folder (Right-click → Send to → Compressed zip)
+Step 18: Transfer ZIP to another machine using pendrive/cloud
+Step 19: On second machine open Terminal → run:
+Command:
+    docker compose up -d
+
+Expected:
+    Nginx + Postgres + Redis start automatically
+
+--------------------------------------------------------
+PHASE 6 — NETWORKS & VOLUMES FOR PERSISTENCE
+--------------------------------------------------------
+
+Step 20: Replace entire docker-compose.yml content with:
+
+version: "3.9"
+networks:
+  app-net:
+
+volumes:
+  db-data:
+
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    networks:
+      - app-net
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo
+      POSTGRES_DB: demo_db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-net
+
+Step 21: Save file
+
+Step 22: Run
+    docker compose up -d
+
+Step 23: Verify services
+    docker compose ps
+
+Step 24: Stop & remove containers
+    docker compose down
+
+Step 25: Start again
+    docker compose up -d
+
+Expected Output:
+    Database data should persist even after restart
+
+--------------------------------------------------------
+PHASE 7 — FLASK WEB APP USING BUILD + AUTO REFRESH
+--------------------------------------------------------
+
+Step 26: Create app.py
+Command:
+    nano app.py
+
+Step 27: Paste:
+
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
+def home():
+    return "Hello from Flask + Docker!"
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+Step 28: Create Dockerfile
+Command:
+    nano Dockerfile
+
+Paste:
+
+FROM python:3.10-slim
+WORKDIR /app
+COPY app.py /app/
+RUN pip install flask
+CMD ["python", "app.py"]
+
+Step 29: Edit docker-compose.yml → replace web service with:
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+Step 30: Build & run full environment
+Command:
+    docker compose up --build
+
+Step 31: Open browser:
+    http://localhost:5000
+
+Expected Output:
+    Hello from Flask + Docker!
+
+Step 32: Open app.py → change message text → Save
+Step 33: Rebuild & run again
+Command:
+    docker compose up --build
+
+Expected Output:
+    Updated message displays in browser
+
+--------------------------------------------------------
+PHASE 8 — CLEANUP
+--------------------------------------------------------
+
+Step 34: Stop all services
+    docker compose down
+
+Step 35: Check containers
+    docker ps -a
+
+Step 36: OPTIONAL: Free disk space
+    docker system prune -a
+
+--------------------------------------------------------
+REQUIRED SCREENSHOTS
+--------------------------------------------------------
+
+📸 docker compose up -d output  
+📸 docker compose ps  
+📸 Nginx page (localhost:8080)  
+📸 Flask output (localhost:5000)  
+📸 Dockerfile & docker-compose.yml  
+📸 Before/after rebuild
+
+--------------------------------------------------------
+SCENARIO QUESTIONS (WRITE IN RECORD NOTEBOOK)
+--------------------------------------------------------
+
+Use commands such as:
+docker compose up -d
+docker compose stop
+docker compose restart
+docker compose logs <service>
+docker compose ps
+docker compose up --build
+docker ps, docker rm, docker rmi, docker images
+
+--------------------------------------------------------
+END OF WEEK-6 LAB EXECUTION
+--------------------------------------------------------

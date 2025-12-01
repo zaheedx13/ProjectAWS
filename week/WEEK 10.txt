@@ -1,0 +1,162 @@
+--------------------------------------------------------
+PHASE 1 — START MINIKUBE ENVIRONMENT
+--------------------------------------------------------
+
+Step 1: Open the application: **Docker Desktop**
+        (Make sure it says: Docker Engine is running)
+
+Step 2: Open **Command Prompt (CMD)** or **PowerShell** as Administrator
+        (Right-click → Run as Administrator)
+
+Step 3: Start Minikube cluster
+        Type in CMD:
+        minikube start --driver=docker
+
+Step 4: Check Minikube status
+        Type in CMD:
+        minikube status
+
+Expected Output: host, kubelet, apiserver, kubeconfig → Running
+
+--------------------------------------------------------
+PHASE 2 — OPEN KUBERNETES DASHBOARD
+--------------------------------------------------------
+
+Step 5: In the same CMD window, type:
+        minikube dashboard
+
+Step 6: A browser window will open automatically.
+        (If it shows a security popup, click **Allow / Continue**)
+
+Expected: Kubernetes dashboard UI with cluster details.
+
+--------------------------------------------------------
+PHASE 3 — CREATE NGNIX DEPLOYMENT & SERVICE
+--------------------------------------------------------
+
+Step 7: Go back to Command Prompt window
+        Type:
+        kubectl create deployment mynginx --image=nginx
+
+Step 8: Check deployment and pods
+        kubectl get deployments
+        kubectl get pods
+
+Step 9: Expose deployment as service
+        kubectl expose deployment mynginx --type=NodePort --port=80 --target-port=80
+
+Step 10: Check service port
+        kubectl get service mynginx
+
+--------------------------------------------------------
+PHASE 4 — SCALE DEPLOYMENT TO MULTIPLE PODS
+--------------------------------------------------------
+
+Step 11: In CMD, type:
+        kubectl scale deployment mynginx --replicas=4
+
+Step 12: Verify 4 pods created
+        kubectl get pods
+
+--------------------------------------------------------
+PHASE 5 — ACCESS NGINX WEBPAGE
+--------------------------------------------------------
+
+Step 13: In CMD, type:
+        kubectl port-forward svc/mynginx 8081:80
+
+Step 14: Open browser manually (Chrome)
+        In address bar type:
+        http://localhost:8081
+
+Expected Output: **Nginx Welcome Page**
+
+(KEEP CMD OPEN – do not close)
+
+--------------------------------------------------------
+PHASE 6 — OPTIONAL: USING MINIKUBE SERVICE URL
+--------------------------------------------------------
+
+Step 15: If port-forward fails, type:
+         minikube tunnel
+
+Step 16: Then type:
+         minikube service mynginx --url
+
+Step 17: Copy URL and paste in Chrome
+
+--------------------------------------------------------
+PHASE 7 — DELETE PODS & SERVICE (CLEANUP)
+--------------------------------------------------------
+
+Step 18: In CMD, type:
+         kubectl delete deployment mynginx
+
+Step 19: Delete service
+         kubectl delete service mynginx
+
+Step 20: Stop Minikube
+         minikube stop
+
+(Do not delete unless required for lab)
+
+--------------------------------------------------------
+PHASE 8 — INSTALL & RUN NAGIOS MONITORING USING DOCKER
+--------------------------------------------------------
+
+Step 21: Open **Docker Desktop** (confirm running)
+
+Step 22: Open **Command Prompt** again
+
+Step 23: Pull Nagios image
+         docker pull jasonrivers/nagios:latest
+
+Step 24: Run Nagios container
+         docker run --name nagiosdemo -p 8888:80 jasonrivers/nagios:latest
+
+Step 25: Open browser (Chrome)
+         Type in address bar:
+         http://localhost:8888
+
+Step 26: Login:
+         Username: nagiosadmin
+         Password: nagios
+
+Step 27: Click on:
+         **Hosts**
+         **Services**
+         **Service Health**
+         **Alerts**
+         **Host Groups**
+
+(Click each tab → take screenshot)
+
+--------------------------------------------------------
+PHASE 9 — STOP & REMOVE NAGIOS
+--------------------------------------------------------
+
+Step 28: Return to Command Prompt
+         Stop Nagios container:
+         docker stop nagiosdemo
+
+Step 29: Remove container:
+         docker rm nagiosdemo
+
+Step 30: Remove image (optional):
+         docker rmi jasonrivers/nagios:latest
+
+--------------------------------------------------------
+SCREENSHOTS REQUIRED
+--------------------------------------------------------
+
+📸 SS1 — Minikube status in CMD
+📸 SS2 — kubectl get pods output (showing replicas = 4)
+📸 SS3 — kubectl get service (NodePort)
+📸 SS4 — Nginx webpage (Welcome page)
+📸 SS5 — Kubernetes dashboard
+📸 SS6 — Docker run Nagios container output
+📸 SS7 — Nagios web UI dashboard
+
+--------------------------------------------------------
+END OF WEEK-10 LAB
+--------------------------------------------------------

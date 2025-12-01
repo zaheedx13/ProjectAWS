@@ -1,0 +1,109 @@
+--------------------------------------------------------
+PHASE 1 — OPEN JENKINS AND CREATE PIPELINE JOB
+--------------------------------------------------------
+
+Step 1: Start Jenkins
+Step 2: Open browser → enter:
+        http://localhost:8080
+
+Step 3: Login using:
+        Username: admin
+        Password: ********
+
+Step 4: On left panel → Click "New Item"
+Step 5: Enter project name: ScriptedPipelineDemo
+Step 6: Select: Pipeline
+Step 7: Click OK
+
+--------------------------------------------------------
+PHASE 2 — CONFIGURE JOB
+--------------------------------------------------------
+
+Step 8: In Description → type:
+        Scripted Pipeline for Maven Jenkins build
+
+Step 9: Scroll to "Build Triggers"
+Step 10: Choose a trigger (example: Poll SCM)
+         Example schedule:
+         H/5 * * * *     → runs every 5 mins
+(or leave empty if manually triggered)
+
+Step 11: Scroll to "Advanced Project Options"
+Step 12: Under Definition → choose:
+         Pipeline Script
+
+--------------------------------------------------------
+PHASE 3 — ADD PIPELINE SCRIPT
+--------------------------------------------------------
+
+Step 13: Copy and paste this scripted pipeline block:
+
+pipeline {
+    agent any
+
+    tools {
+        maven 'MAVEN-HOME'
+    }
+
+    stages {
+
+        stage('git repo & clean') {
+            steps {
+                bat "git clone https://github.com/yourName/yourRepository.git"
+                bat "mvn clean -f mavenjava"
+            }
+        }
+
+        stage('install') {
+            steps {
+                bat "mvn install -f mavenjava"
+            }
+        }
+
+        stage('test') {
+            steps {
+                bat "mvn test -f mavenjava"
+            }
+        }
+
+        stage('package') {
+            steps {
+                bat 'mvn package -f mavenjava'
+            }
+        }
+    }
+}
+
+Step 14: Replace GitHub link with your actual repository
+Step 15: If your project folder is named differently, replace all `mavenjava` with your folder name
+
+Step 16: Click Apply
+Step 17: Click Save
+
+--------------------------------------------------------
+PHASE 4 — RUN & VALIDATE PIPELINE
+--------------------------------------------------------
+
+Step 18: Click "Build Now"
+Step 19: Click the latest build number (#1)
+Step 20: Click "Console Output"
+
+Expected:
+✔ Git clone step
+✔ Clean + Install + Test + Package stages
+✔ BUILD SUCCESS
+
+--------------------------------------------------------
+SCREENSHOTS TO CAPTURE FOR LAB
+--------------------------------------------------------
+
+Screenshot 1 — Pipeline Job dashboard
+Screenshot 2 — Pipeline Script section
+Screenshot 3 — Console output showing all stages
+Screenshot 4 — Final BUILD SUCCESS message
+Screenshot 5 — Git clone step inside logs
+Screenshot 6 — Test stage output log
+
+--------------------------------------------------------
+END OF EXECUTION PORTION
+--------------------------------------------------------

@@ -1,0 +1,214 @@
+WEEK 3 – LAB EXECUTION ACTION PLAN (FINAL COPY & FOLLOW FORMAT)
+Collaboration, Organization, Fork, Pull Requests, Merge Conflicts, Patch Files
+
+--------------------------------------------------------
+PART A — CREATE ORGANIZATION & SHARE REPOSITORY
+--------------------------------------------------------
+
+Step 1: Open GitHub
+1. Open Chrome
+2. Type: https://github.com
+3. Login
+
+Step 2: Create Organization
+1. Click your Profile Picture (top right)
+2. Click **Your organizations**
+3. Click **New organization**
+4. Select **Create a free organization**
+5. Enter Organization Name & Email
+6. Click **Next**
+7. Add members by email or GitHub username
+8. Click **Send Invitation**
+9. Click **Complete Setup**
+
+Step 3: Set Member Permissions
+1. Open the Organization home page
+2. Click **Settings** (left sidebar)
+3. Click **Member privileges**
+4. Set:
+   Base permissions → **Write**
+   Project base permissions → **Write**
+5. Click **Save**
+
+Step 4: Create Repository Inside Organization
+1. Click **New Repository**
+2. Enter repository name: SharedProject
+3. Select **Private**
+4. Click **Create Repository**
+
+--------------------------------------------------------
+PART B — SHARE A REPOSITORY WITH COLLABORATORS
+--------------------------------------------------------
+
+Step 5: Invite collaborators (Owner)
+1. Open repository → Click **Settings**
+2. Click **Collaborators**
+3. Click **Add people**
+4. Enter GitHub username / email
+5. Click **Add**
+6. Collaborator must check email and click **Accept Invitation**
+
+Step 6: Clone shared repo (Collaborator-2 system)
+Open Git Bash → type:
+   git config --global user.name "Your Name"
+   git config --global user.email "your@email.com"
+
+Copy repo URL from GitHub → Code → HTTPS → copy
+
+Run:
+   git clone https://github.com/OrgName/SharedProject.git
+   cd SharedProject
+
+Step 7: Create working branch
+   git checkout -b feature/mywork
+
+Step 8: Edit files using VS Code
+Right-click project → **Open with Code**
+Make required changes → Save
+
+Step 9: Stage & Commit
+   git add .
+   git commit -m "Added feature"
+
+Step 10: Push branch
+   git push origin feature/mywork
+
+Step 11: Keep branch updated
+   git checkout main
+   git pull origin main
+   git checkout feature/mywork
+   git merge main
+
+--------------------------------------------------------
+PART C — FORK WORKFLOW & PULL REQUESTS
+--------------------------------------------------------
+
+Step 12: Fork repository
+1. Open original public repo in browser
+2. Click **Fork** (top right)
+3. New repo appears in your GitHub account
+
+Step 13: Clone your fork
+Open Git Bash → type:
+   git clone https://github.com/YourName/awesome-project.git
+   cd awesome-project
+
+Step 14: Make changes → commit → push
+   git add .
+   git commit -m "Contribution update"
+   git push origin main
+
+Step 15: Create Pull Request
+1. Open repository on GitHub
+2. Click **Pull Requests**
+3. Click **New Pull Request**
+4. Add Title + Description
+5. Click **Create Pull Request**
+
+Step 16: Review & Merge by Owner
+1. Click **Pull Requests**
+2. Click request
+3. Check **Files Changed**
+4. Click **Merge Pull Request**
+5. Click **Confirm merge**
+
+--------------------------------------------------------
+PART D — CREATE & RESOLVE MERGE CONFLICTS
+--------------------------------------------------------
+
+Step 17: Create merge conflict situation
+(Open Git Bash inside repo)
+
+User 1:
+   git checkout -b feature-A
+Edit README.md → add:
+   Line A from Feature A
+   git add .
+   git commit -m "Feature A"
+   git push origin feature-A
+
+User 2:
+   git checkout -b feature-B
+Edit SAME LINE in SAME FILE:
+   Line B from Feature B
+   git add .
+   git commit -m "Feature B"
+   git push origin feature-B
+
+User 1 merges both:
+   git checkout main
+   git merge feature-A
+   git merge feature-B
+
+Result:
+   CONFLICT (content): Merge conflict in README.md
+
+Step 18: Resolve conflict
+1. Open README.md in VS Code
+Look for markers:
+<<<<<<< HEAD
+Line A
+=======
+Line B
+>>>>>>> feature-B
+
+2. Edit final content manually
+Example:
+Final merged line
+
+3. Delete markers <<<<<<< ======= >>>>>>>
+
+4. Back to Git Bash:
+   git add README.md
+   git commit -m "Resolved merge conflict"
+   git push
+
+To cancel merge:
+   git merge --abort
+
+--------------------------------------------------------
+PART E — CREATE & APPLY PATCH FILE
+--------------------------------------------------------
+
+Step 19: Create Patch
+Open Git Bash in repo → type:
+   git log   (copy latest commit hash)
+   git format-patch -1 <commit-hash>
+
+Output file created:
+   0001-commit-message.patch
+
+Step 20: Apply patch (receiver side)
+   git apply 0001-commit-message.patch
+or:
+   git am 0001-commit-message.patch
+
+--------------------------------------------------------
+SOLO MERGE CONFLICT PRACTICE
+--------------------------------------------------------
+
+Step 21: Create conflict alone
+   git checkout -b feature-branch
+Edit file: app.js
+   console.log("Change from feature branch");
+   git add .
+   git commit -m "Feature"
+
+Switch to main:
+   git checkout main
+Edit same line:
+   console.log("Change from main branch");
+   git add .
+   git commit -m "Main"
+
+Attempt merge:
+   git merge feature-branch
+
+Expected Output:
+   Merge conflict message
+
+Resolve using previous instructions.
+
+--------------------------------------------------------
+END OF WEEK 3 LAB
+--------------------------------------------------------
